@@ -10,6 +10,6 @@ import Foundation
 import RealmSwift
 
 class ToDo: Object {
-    dynamic var title = ""
-    dynamic var createdDate = Date()
+    @objc dynamic var title = ""
+    @objc dynamic var createdDate = Date()
 }

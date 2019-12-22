@@ -9,35 +9,34 @@
 import UIKit
 import RealmSwift
 
-class ToDoViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+final class ToDoViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    @IBOutlet weak var tableView: UITableView!
-    let cellIdentifile = "ToDoCell"
-    let data = ["aaa", "bbb", "ccc"]
-    let toDo = ToDo()
-    let toDoList = Results<ToDo>
+    @IBOutlet private weak var tableView: UITableView!
+    private let cellIdentifile = "ToDoCell"
+    private let data = ["aaa", "bbb", "ccc"]
+    private let toDo = ToDo()
+    private var toDoList: Results<ToDo>!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
+        addToDataBase()
+        fetchAll()
     }
     
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+    private func add(to realm: Realm) {
+        do {
+            try realm.write {
+                toDo.title = "TODO"
+                realm.add(toDo)
+            }
+        } catch let error {
+            fatalError(error.localizedDescription)
+        }
     }
     
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return data.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifile, for: indexPath)
-        cell.textLabel?.text = data[indexPath.row]
-        return cell
-    }
-    
-    func addToDataBase() {
+    private func addToDataBase() {
         do {
             let realm = try Realm()
             add(to: realm)
@@ -46,15 +45,27 @@ class ToDoViewController: UIViewController, UITableViewDelegate, UITableViewData
         }
     }
     
-    func add(to realm: Realm) {
+    private func fetchAll() {
         do {
-            try realm.write {
-                toDo.title = data[0]
-                realm.add(toDo)
-            }
+            let realm = try Realm()
+            toDoList = realm.objects(ToDo.self)
         } catch let error {
             fatalError(error.localizedDescription)
         }
+    }
+    
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return toDoList.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifile, for: indexPath)
+        cell.textLabel?.text = toDoList[indexPath.row].title
+        return cell
     }
 }
 
