@@ -12,6 +12,7 @@ import RealmSwift
 final class ToDoViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     @IBOutlet private weak var tableView: UITableView!
+    @IBOutlet private weak var editButton: UIBarButtonItem!
     private let cellIdentifile = "ToDoCell"
     private let data = ["aaa", "bbb", "ccc"]
     private let toDo = ToDo()

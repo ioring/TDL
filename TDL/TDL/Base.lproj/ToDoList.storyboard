@@ -39,8 +39,11 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
-                    <navigationItem key="navigationItem" title="TODOリスト" leftItemsSupplementBackButton="YES" id="yNp-ku-Pvd"/>
+                    <navigationItem key="navigationItem" title="TODOリスト" leftItemsSupplementBackButton="YES" id="yNp-ku-Pvd">
+                        <barButtonItem key="rightBarButtonItem" title="Item" id="ui4-Hm-FsB"/>
+                    </navigationItem>
                     <connections>
+                        <outlet property="editButton" destination="ui4-Hm-FsB" id="vZV-jQ-B4w"/>
                         <outlet property="tableView" destination="28U-yj-gwb" id="MNw-E8-fO6"/>
                     </connections>
                 </viewController>
