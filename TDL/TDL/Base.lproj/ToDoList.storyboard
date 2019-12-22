@@ -40,7 +40,11 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <navigationItem key="navigationItem" title="TODOリスト" leftItemsSupplementBackButton="YES" id="yNp-ku-Pvd">
-                        <barButtonItem key="rightBarButtonItem" title="Item" id="ui4-Hm-FsB"/>
+                        <barButtonItem key="rightBarButtonItem" title="Item" id="ui4-Hm-FsB">
+                            <connections>
+                                <action selector="editButtonTapped:" destination="BYZ-38-t0r" id="HHa-st-rt7"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="editButton" destination="ui4-Hm-FsB" id="vZV-jQ-B4w"/>

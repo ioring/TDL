@@ -68,5 +68,12 @@ final class ToDoViewController: UIViewController, UITableViewDelegate, UITableVi
         cell.textLabel?.text = toDoList[indexPath.row].title
         return cell
     }
+    
+    @IBAction func editButtonTapped(_ sender: Any) {
+        guard let editViewController = UIStoryboard(name: "EditViewController", bundle: nil).instantiateInitialViewController() as? EditViewController else {
+            return
+        }
+        navigationController?.pushViewController(editViewController, animated: true)
+    }
 }
 
