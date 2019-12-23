@@ -14,35 +14,27 @@ final class ToDoViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var editButton: UIBarButtonItem!
     private let cellIdentifile = "ToDoCell"
-    private let data = ["aaa", "bbb", "ccc"]
     private let toDo = ToDo()
     private var toDoList: Results<ToDo>!
+    
+    private var notificationToken: NotificationToken!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.delegate = self
         tableView.dataSource = self
-        addToDataBase()
+        
         fetchAll()
-    }
-    
-    private func add(to realm: Realm) {
-        do {
-            try realm.write {
-                toDo.title = "TODO"
-                realm.add(toDo)
+        
+        notificationToken = toDoList.observe{ [weak self] (changes: RealmCollectionChange) in
+            guard let self = self else { return }
+            self.fetchAll()
+            switch changes {
+            case .initial, .update:
+                self.tableView.reloadData()
+            case .error(let error):
+                fatalError(error.localizedDescription)
             }
-        } catch let error {
-            fatalError(error.localizedDescription)
-        }
-    }
-    
-    private func addToDataBase() {
-        do {
-            let realm = try Realm()
-            add(to: realm)
-        } catch let error {
-            fatalError(error.localizedDescription)
         }
     }
     
