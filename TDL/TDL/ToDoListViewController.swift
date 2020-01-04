@@ -10,7 +10,7 @@ import UIKit
 import RealmSwift
 
 final class ToDoViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+    
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var editButton: UIBarButtonItem!
     private let cellIdentifile = "ToDoCell"
@@ -61,10 +61,18 @@ final class ToDoViewController: UIViewController, UITableViewDelegate, UITableVi
         return cell
     }
     
-    @IBAction func editButtonTapped(_ sender: Any) {
+    @IBAction private func editButtonTapped(_ sender: Any) {
         guard let editViewController = UIStoryboard(name: "EditViewController", bundle: nil).instantiateInitialViewController() as? EditViewController else {
             return
         }
+        navigationController?.pushViewController(editViewController, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let editViewController = UIStoryboard(name: "EditViewController", bundle: nil).instantiateInitialViewController() as? EditViewController else {
+            return
+        }
+        editViewController.toDo = toDoList[indexPath.row]
         navigationController?.pushViewController(editViewController, animated: true)
     }
 }

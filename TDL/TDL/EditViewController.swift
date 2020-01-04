@@ -11,14 +11,24 @@ import RealmSwift
 
 final class EditViewController: UIViewController {
     
-    @IBOutlet weak var textField: UITextField!
-    @IBOutlet weak var editButton: UIButton!
+    @IBOutlet private weak var textField: UITextField!
+    @IBOutlet private weak var editButton: UIButton!
+    @IBOutlet private weak var editLabel: UILabel!
     
-    private let toDo = ToDo()
+    var toDo: ToDo?
     
     override func viewDidLoad() {
-        editButton.titleLabel?.text = "Add"
-        navigationItem.title = "TODOを追加"
+        
+        if let toDo = toDo {
+            editLabel.text = toDo.title
+            navigationItem.title = "TODOを追加"
+            editButton.setTitle("更新", for: .normal)
+            
+        } else {
+            editLabel.text = ""
+            navigationItem.title = "TODOを編集"
+            editButton.setTitle("追加", for: .normal)
+        }
     }
     
     @IBAction func updateOrEditButtonTapped(_ sender: Any) {
@@ -26,10 +36,15 @@ final class EditViewController: UIViewController {
             preconditionFailure("textFieldがnilになることはない")
         }
         
-        add(by: text)
+        if let toDo = toDo {
+            edit(by: toDo)
+        } else {
+            let toDo = ToDo()
+            add(by: text, to: toDo)
+        }
     }
     
-    private func add(by title: String) {
+    private func add(by title: String, to toDo: ToDo) {
         do {
             let realm = try Realm()
             do {
@@ -45,4 +60,22 @@ final class EditViewController: UIViewController {
         }
     }
     
+    private func edit(by toDo: ToDo) {
+        do {
+            let realm = try Realm()
+            guard let title = textField.text else {
+                preconditionFailure("textはnilにならない")
+            }
+            do {
+                try realm.write {
+                    toDo.title = title
+                }
+            } catch {
+                fatalError(error.localizedDescription)
+            }
+            
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+    }
 }
