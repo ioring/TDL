@@ -14,7 +14,6 @@ final class ToDoViewController: UIViewController, UITableViewDelegate, UITableVi
     @IBOutlet private weak var tableView: UITableView!
     @IBOutlet private weak var editButton: UIBarButtonItem!
     private let cellIdentifile = "ToDoCell"
-    private let toDo = ToDo()
     private var toDoList: Results<ToDo>!
     
     private var notificationToken: NotificationToken!
@@ -74,6 +73,31 @@ final class ToDoViewController: UIViewController, UITableViewDelegate, UITableVi
         }
         editViewController.toDo = toDoList[indexPath.row]
         navigationController?.pushViewController(editViewController, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        fetchAll()
+        let deleteAction = UIContextualAction(style: .destructive, title: "削除") { [weak self] action, view, handler in
+            guard let self = self else { return }
+            self.delete(by: self.toDoList[indexPath.row])
+        }
+        let actions = UISwipeActionsConfiguration(actions: [deleteAction])
+        return actions
+    }
+    
+    private func delete(by toDo: ToDo) {
+        do {
+            let realm = try Realm()
+            do {
+                try realm.write {
+                    realm.delete(toDo.self)
+                }
+            } catch let error {
+                fatalError(error.localizedDescription)
+            }
+        } catch let error {
+            fatalError(error.localizedDescription)
+        }
     }
 }
 
